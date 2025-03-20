@@ -76,6 +76,11 @@ $app->middleware([
     App\Http\Middleware\ExampleMiddleware::class
 ]);
 
+$app->routeMiddleware([
+    'staticToken' => App\Http\Middleware\StaticTokenMiddleware::class,
+]);
+
+
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
 // ]);
