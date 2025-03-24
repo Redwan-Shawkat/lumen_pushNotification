@@ -1,10 +1,7 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
-
-
-$router->group(['middleware' => 'staticToken'], function () use ($router) {
-    $router->post('/send-message', ['uses' => 'MessageController@store']);
+$router->group(['middleware' => 'apiToken'], function () use ($router) {
+    // $router->post('/send-message', ['uses' => 'MessageController@store']);
     $router->post('/send-notification', ['uses' => 'NotificationController@sendPushNotification']);
 });
 

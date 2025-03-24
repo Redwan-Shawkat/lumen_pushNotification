@@ -77,7 +77,7 @@ $app->middleware([
 ]);
 
 $app->routeMiddleware([
-    'staticToken' => App\Http\Middleware\StaticTokenMiddleware::class,
+    'apiToken' => App\Http\Middleware\ApiTokenMiddleware::class,
 ]);
 
 
