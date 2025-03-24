@@ -17,6 +17,10 @@ use App\Services\AppleApnService;
 //? Validation for Incoming Requests
 use Illuminate\Support\Facades\Validator;
 
+//? Log File
+use Illuminate\Support\Facades\Log;
+
+
 class NotificationController extends Controller
 {
     //? Property to store firebase service instance
@@ -124,7 +128,8 @@ class NotificationController extends Controller
                 //? strtolower always returns lowercase characters
                 $messageId = $this->firebaseService->sendNotification($deviceToken, $phoneNumber, $body);
             } elseif (strtolower($platform) === 'ios') {
-                $messageId = $this->appleApnService->sendNotification($deviceToken . $phoneNumber, $body);
+                $messageId = $this->appleApnService->sendNotification($deviceToken, $phoneNumber, $body);
+                Log::info('APN Response: ' . json_encode($messageId));
             } else {
                 return response()->json([
                     'success' => false,

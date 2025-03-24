@@ -24,7 +24,7 @@ class AppleApnService
 
         //? APNs authentication with .pem certificate
         $options = [
-            'certificate_path' => storage_path(env('APN_CERT')),
+            'certificate_path' => base_path(env('APN_CERT')),
             'certificate_secret' => env('APN_PASSPHRASE', '')
         ];
 
@@ -47,14 +47,19 @@ class AppleApnService
             //? SEND THE NOTIFICATION
             $responses = $client->push();
 
+            if (empty($responses)) {
+                Log::error('APN Error: No response from Apple servers.');
+                throw new \Exception('No response from Apple servers.');
+            }
+
             foreach ($responses as $response) {
                 if ($response->getStatusCode() === 200) {
                     return $response->getApnsId();
-                } else {
-                    Log::error('APN Error:' . $response->getReasonPhrase());
-                    throw new \Exception($response->getReasonPhrase());
                 }
             }
+
+            Log::error('APN Error: All push attempts failed.');
+            throw new \Exception('Failed to send APN notification.');
         } catch (\Exception $e) {
             Log::error('APN Oush Failed:' . $e->getMessage());
         }
