@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+//? Handles IIncoming API Requests
 use Illuminate\Http\Request;
 
 //? Importing the Model
 use App\Models\Notification;
 
+//? Firebase
 use App\Services\FirebaseService;
 
+//? Apple
+use App\Services\AppleApnService;
+
+//? Validation for Incoming Requests
 use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends Controller
@@ -16,11 +22,16 @@ class NotificationController extends Controller
     //? Property to store firebase service instance
     protected $firebaseService;
 
+    //? Property to store apple service instance
+    protected $appleApnService;
 
-    public function __construct(FirebaseService $firebaseService)
+
+    public function __construct(FirebaseService $firebaseService, AppleApnService $appleApnService)
     {
-        //? Inject Firebase
+        //? Initialize firebase service
         $this->firebaseService = $firebaseService;
+        //? Initialize apple service
+        $this->appleApnService = $appleApnService;
     }
 
     //? Send Push Notifications
@@ -39,7 +50,8 @@ class NotificationController extends Controller
         $validator = Validator::make($request->all(), [
             'device_token' => 'required|string',
             'phone_number' => 'required|string',
-            'body' => 'required|string'
+            'body' => 'required|string',
+            'platform' => 'required|string|in:android,ios'
         ]);
 
         if ($validator->fails()) {
@@ -50,6 +62,7 @@ class NotificationController extends Controller
         $deviceToken = $request->input('device_token'); //? FCM TOKEN
         $phoneNumber = $request->input('phone_number'); //? Phone Number
         $body = $request->input('body'); //? Text to be displayed
+        $platform = $request->input('platform');; //? P;atf
 
 
         /*
@@ -62,6 +75,7 @@ class NotificationController extends Controller
         }
         */
 
+        /*
         //? Send Push Notification using Firebase Service and Save it on Database
         try {
             //? Save on the database first
@@ -80,6 +94,52 @@ class NotificationController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+           */
+
+        /*
+        try {
+            if ($platform === 'android') {
+                //? Send Push Notification through Firebess
+                $messageId = $this->firebaseService->sendNotification($deviceToken, $phoneNumber, $body);
+            } else {
+                //? Send Push Notification Apple Apple APN
+                $messageId = $this->appleApnService->sendNotification($deviceToken, $phoneNumber, $body);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message_id' => $messageId
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+        */
+
+        try {
+            if (strtolower($platform) === 'android') {
+                //? strtolower always returns lowercase characters
+                $messageId = $this->firebaseService->sendNotification($deviceToken, $phoneNumber, $body);
+            } elseif (strtolower($platform) === 'ios') {
+                $messageId = $this->appleApnService->sendNotification($deviceToken . $phoneNumber, $body);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid platform. Please use android or ios',
+                ], 400);
+            }
+            return response()->json([
+                'success' => true,
+                'message_id' => $messageId
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 }
