@@ -31,7 +31,7 @@ class FirebaseService
     {
 
         //? Create a new Firebase CloudMessage
-        //! THE ACTUAL MESSAG
+        //! THE ACTUAL MESSAGE
         $message = CloudMessage::new() //? Creating a new message instance
             ->toToken($deviceToken) //? Device Token
             // ->withNotification(Notification::create($title, $body)); //? Setting Title & Body

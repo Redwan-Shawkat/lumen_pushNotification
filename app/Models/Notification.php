@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    protected $fillable = ['phone_number', 'body'];
+    protected $fillable = ['phone_number', 'body', 'device_token'];
 }

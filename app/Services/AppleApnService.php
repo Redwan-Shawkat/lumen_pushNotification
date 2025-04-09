@@ -25,6 +25,7 @@ class AppleApnService
         //? APNs authentication with .pem certificate
         $options = [
             'certificate_path' => base_path(env('APN_CERT')),
+            // 'certificate_path' => "E:/red/Projects/lumen/notiApp/modify/storage/credentials/CertificatesCarcopoloPush.pem",
             'certificate_secret' => env('APN_PASSPHRASE', '')
         ];
 
@@ -61,7 +62,7 @@ class AppleApnService
             Log::error('APN Error: All push attempts failed.');
             throw new \Exception('Failed to send APN notification.');
         } catch (\Exception $e) {
-            Log::error('APN Oush Failed:' . $e->getMessage());
+            Log::error('APN Push Failed:' . $e->getMessage());
         }
     }
 }

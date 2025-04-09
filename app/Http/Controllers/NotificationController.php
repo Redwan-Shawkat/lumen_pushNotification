@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Validator;
 //? Log File
 use Illuminate\Support\Facades\Log;
 
+// //? DB FILE
+// use Illuminate\Support\Facades\DB;
+
 
 class NotificationController extends Controller
 {
@@ -28,6 +31,18 @@ class NotificationController extends Controller
 
     //? Property to store apple service instance
     protected $appleApnService;
+
+
+    // //?Testing DATAVASE CONNECTION
+    // public function testDatabaseConnection()
+    // {
+    //     try {
+    //         DB::connection()->getPdo();
+    //         return response()->json(['success' => true, 'message' => 'Database connection successful']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => 'Database connection failed: ' . $e->getMessage()]);
+    //     }
+    // }
 
 
     public function __construct(FirebaseService $firebaseService, AppleApnService $appleApnService)

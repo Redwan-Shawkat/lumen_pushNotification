@@ -60,6 +60,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('database');
 
 /*
 |--------------------------------------------------------------------------
@@ -76,6 +77,7 @@ $app->middleware([
     App\Http\Middleware\ExampleMiddleware::class
 ]);
 
+//? Middleware Register
 $app->routeMiddleware([
     'apiToken' => App\Http\Middleware\ApiTokenMiddleware::class,
 ]);
@@ -99,7 +101,18 @@ $app->routeMiddleware([
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+//? DATEBASE INTEGRATION
+$app->register(Illuminate\Database\DatabaseServiceProvider::class);
+
+
+
+//? Migration INTEGRATION
+$app->register(Illuminate\Database\MigrationServiceProvider::class);
+
+
 //? Customly Added Loging File
+$app->configure('logging');
 $app->register(Illuminate\Log\LogServiceProvider::class);
 
 /*
